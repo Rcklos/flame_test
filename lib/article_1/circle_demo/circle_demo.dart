@@ -12,12 +12,14 @@ class CircleDemoGame extends FlameGame with HasCollidables, TapDetector {
   @override
   Future<void>? onLoad() async {
     // TODO: implement onLoad
+    // Make Screen bounds collidable
     add(ScreenCollidable());
   }
 
   @override
   void onTapDown(TapDownInfo info) {
     // TODO: implement onTapDown
+    // Add a Blue ball each time the tap down event is triggered
     add(CircleDemoComponent(info.eventPosition.game));
   }
 
@@ -36,21 +38,30 @@ class CircleDemoComponent extends PositionComponent
     _paint.isAntiAlias = true;
     _paint.style = PaintingStyle.fill;
   }
+  // You can set the gravity as your feel
   static final Vector2 _gravity = Vector2(0, 2000);
+
   late final Paint _paint;
   late Vector2 _velocity;
+
+  // false until the screen is hit
   bool _isHit = false;
+  // false only when hitting the screen
   bool _isHitEnd = true;
+
 
   @override
   Future<void>? onLoad() {
     // TODO: implement onLoad
+    // make the ball collidable
     addHitbox(HitboxCircle());
+    // initialize the velocity of ball
     _velocity = Vector2((Random().nextInt(6000) - 3000).toDouble(), 0);
   }
 
   @override
   void render(Canvas canvas){
+    // render a blue ball
     renderHitboxes(canvas, paint: _paint);
   }
 
@@ -73,6 +84,7 @@ class CircleDemoComponent extends PositionComponent
     position.add(_gravity * 0.5 * dt * dt + _velocity * dt);
     _velocity.add(_gravity * dt);
 
+    // remove the ball from its parent when it get out of the screen
     if(position.y - (size.y / 2) > gameRef.size.y) {
       removeFromParent();
     }
